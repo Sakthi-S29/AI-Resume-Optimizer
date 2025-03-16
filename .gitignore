@@ -1,0 +1,44 @@
+# Virtual environment
+resume-ai-env/
+.env
+
+# Python-related files
+*.pyc
+*.pyo
+__pycache__/
+*.log
+
+# Dependency files
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# VS Code settings
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# AWS Credentials (if stored locally)
+.aws/
+
+# Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Docker-related files
+.dockerignore
+docker-compose.override.yml
+
+# Node.js dependencies (if frontend is included)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment and secret files
+.env*
+!env.sample
+secrets.json
+

@@ -42,3 +42,4 @@ yarn.lock
 !env.sample
 secrets.json
 
+commands/

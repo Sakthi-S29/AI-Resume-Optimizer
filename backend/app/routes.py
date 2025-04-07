@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Form
 from app.aws import upload_to_s3, extract_text_from_s3_file
+from app.utils import score_resume_against_jd
 
 router  = APIRouter()
 
@@ -29,4 +30,20 @@ async def upload_job_description(user_id: str = Form(...), jd_text: str = Form(.
         "stored_text_snippet": jd_text[:100] + "..."
     }
 
+
+@router.post("/resume-score")
+async def score_resume(user_id: str = Form(...), resume_text: str = Form(...)):
+    jd_text = job_descriptions.get(user_id)
+    if not jd_text:
+        return {"error": "Job Description not found for this user."}
+    
+    score_result = score_resume_against_jd(resume_text, jd_text)
+    print("DEBUG score_result:", score_result)
+
+    return {
+        "message": "ATS score has been calculated ✅",
+        "score": score_result["score_percent"],
+        "matched_keywords": score_result["matched_keywords"],
+        "missing_keywords": score_result["missing_keywords"]
+    }
 

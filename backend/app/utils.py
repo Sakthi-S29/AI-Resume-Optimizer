@@ -1,5 +1,12 @@
 import re
+import json
+from pathlib import Path
 from collections import Counter
+SKILL_FILE = Path(__file__).parent / "skills.json"
+
+with open(SKILL_FILE, "r") as f:
+    SKILL_MAP = json.load(f)
+
 SKILL_KEYWORDS = [
     "python", "java", "aws", "docker", "kubernetes", "git", "linux",
     "react", "node.js", "sql", "mongodb", "lambda", "dynamodb",
@@ -19,22 +26,22 @@ def extract_keywords(text: str) -> Counter:
     return Counter(tokens)
 
 def score_resume_against_jd(resume_text: str, jd_text: str) -> dict:
-    resume_keywords = extract_keywords(resume_text)
-    jd_keywords = extract_keywords(jd_text)
+    resume_tokens = set(clean_text(resume_text).split())
+    jd_tokens = set(clean_text(jd_text).split())
 
     matched = []
-    missed = []
+    missing = []
 
-    for keyword in SKILL_KEYWORDS:
-        if jd_keywords[keyword] > 0:
-            if resume_keywords[keyword] > 0:
-                matched.append(keyword)
+    for skill, synonyms in SKILL_MAP.items():
+        if any(s in jd_tokens for s in synonyms):
+            if any(s in resume_tokens for s in synonyms):
+                matched.append(skill)
             else:
-                missed.append(keyword)
+                missing.append(skill)
 
-    match_score = len(matched) / (len(matched) + len(missed) + 1e-6)
+    match_score = len(matched) / (len(matched) + len(missing) + 1e-6)
     return {
         "score_percent": round(match_score * 100, 2),
         "matched_keywords": matched,
-        "missing_keywords": missed
+        "missing_keywords": missing
     }

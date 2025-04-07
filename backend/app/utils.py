@@ -32,24 +32,34 @@ def extract_keywords(text: str) -> Counter:
 
 def score_resume_against_jd(resume_text: str, jd_text: str) -> dict:
     resume_tokens = set(clean_text(resume_text).split())
-    jd_tokens = set(clean_text(jd_text).split())
+    relevant_skills = extract_relevant_skills_from_jd(jd_text)
+
     matched = []
     missing = []
 
-    for skill, synonyms in SKILL_MAP.items():
-        print(f"🔍 Checking skill: {skill} -> Synonyms: {synonyms}")
-        if any(s in jd_tokens for s in synonyms):
-            print(f"✅ '{skill}' is in JD")
-            if any(s in resume_tokens for s in synonyms):
-                print(f"✅ '{skill}' is also in Resume → MATCHED")
-                matched.append(skill)
-            else:
-                print(f"❌ '{skill}' missing in Resume")
-                missing.append(skill)
+    for skill in relevant_skills:
+        synonyms = SKILL_MAP.get(skill, [])
+        if any(s in resume_tokens for s in synonyms):
+            matched.append(skill)
+        else:
+            missing.append(skill)
 
-    match_score = len(matched) / (len(matched) + len(missing) + 1e-6)
+    print(f"🧠 Relevant skills from JD: {relevant_skills}")
+
+
+    score = len(matched) / (len(matched) + len(missing) + 1e-6)
     return {
-        "score_percent": round(match_score * 100, 2),
+        "score_percent": round(score * 100, 2),
         "matched_keywords": matched,
         "missing_keywords": missing
     }
+
+def extract_relevant_skills_from_jd(jd_text: str) -> set:
+    jd_tokens = set(clean_text(jd_text).split())
+    relevant_skills = set()
+
+    for skill, synonyms in SKILL_MAP.items():
+        if any(s in jd_tokens for s in synonyms):
+            relevant_skills.add(skill)
+
+    return relevant_skills

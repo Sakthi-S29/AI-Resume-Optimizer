@@ -15,7 +15,6 @@
     "cloudformation": ["cloudformation", "aws cfn"],
     "ansible": ["ansible", "configuration management"],
     "prometheus": ["prometheus", "grafana", "monitoring"],
-    "sql": ["sql", "mysql", "postgresql", "postgres", "sqlite", "oracle", "mssql"],
     "mongodb": ["mongodb", "mongo", "nosql"],
     "dynamodb": ["dynamodb", "nosql aws"],
     "redis": ["redis", "key-value store"],
@@ -36,5 +35,10 @@
     "rest": ["rest", "restful", "rest api", "restful api"],
     "graphql": ["graphql", "gql"],
     "microservices": ["microservices", "service-oriented architecture", "soa"],
-    "agile": ["agile", "scrum", "kanban"]
+    "agile": ["agile", "scrum", "kanban"],
+    "sql": ["sql", "relational database", "relational databases", "mysql", "postgresql", "postgres", "sqlite", "oracle", "mssql"],
+    "distributed systems": ["distributed", "distributed systems", "multi-tiered"],
+    "oop": ["object oriented programming", "object-oriented design", "oop"],
+    "algorithms": ["algorithms", "data structures", "complexity"],
+    "c++": ["c++", "cpp"]
   }

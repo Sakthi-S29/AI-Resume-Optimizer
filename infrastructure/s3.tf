@@ -20,3 +20,8 @@ resource "aws_s3_bucket_public_access_block" "block_public" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+output "s3_bucket_name" {
+  value = aws_s3_bucket.resume_storage.bucket
+  description = "The name of the created S3 bucket"
+}

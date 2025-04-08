@@ -5,8 +5,8 @@ from app.utils import score_resume_against_jd, store_score_in_dynamodb, get_scor
 router  = APIRouter()
 
 @router.post("/upload-resume")
-async def upload_resume(file: UploadFile = File(...)):
-    s3_url = upload_to_s3(file)
+async def upload_resume(resume: UploadFile = File(...)):
+    s3_url = upload_to_s3(resume)
 
     bucket_name = s3_url.split("//")[1].split(".s3")[0]
     key = s3_url.split(".com/")[1]
@@ -18,6 +18,7 @@ async def upload_resume(file: UploadFile = File(...)):
         "s3_url": s3_url,
         "extracted_text": extracted_text
     }
+
 
 job_descriptions = {}
 

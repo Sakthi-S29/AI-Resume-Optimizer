@@ -3,7 +3,7 @@ import uuid
 from fastapi import UploadFile
 import os
 
-BUCKET_NAME = "resume-optimizer-3f508ab5"
+BUCKET_NAME = "resume-optimizer-a690be2f"
 
 s3 = boto3.client("s3")
 

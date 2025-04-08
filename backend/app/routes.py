@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form
 from app.aws import upload_to_s3, extract_text_from_s3_file
 from app.utils import score_resume_against_jd, store_score_in_dynamodb, get_score_history
+from app.resume_generator import generate_resume
 
 router  = APIRouter()
 
@@ -52,4 +53,31 @@ async def score_resume(user_id: str = Form(...), resume_text: str = Form(...)):
 @router.get("/score-history/{user_id}")
 def score_history(user_id: str):
     return get_score_history(user_id)
+
+@router.get("/generate-resume")
+def generate_sample_resume():
+    resume = generate_resume(
+        name="Sakthi Sharan Mahadevan",
+        email="sakthisharanm@gmail.com",
+        skills=["python", "aws", "docker", "fastapi"],
+        education="Master of Applied Computer Science, Dalhousie University, 2026",
+        certifications=["AWS Certified Cloud Practitioner"],
+        projects=[
+            {
+                "title": "AI Resume Optimizer",
+                "situation": "Users struggle to get interviews due to ATS failures.",
+                "task": "Build a system to analyze and improve resume scores.",
+                "action": "Used Python, FastAPI, S3, DynamoDB, React, Tailwind.",
+                "result": "Improved resume match score by up to 40%."
+            },
+            {
+                "title": "Community Smells Detector",
+                "situation": "GitHub repos suffer from poor team collaboration.",
+                "task": "Detect anti-patterns like Radio Silence or Siloing.",
+                "action": "Built a web tool on top of CSDetector using GitHub API.",
+                "result": "Helped teams identify collaboration issues proactively."
+            }
+        ]
+    )
+    return resume
 

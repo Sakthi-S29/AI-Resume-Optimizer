@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Form
 from app.aws import upload_to_s3, extract_text_from_s3_file
-from app.utils import score_resume_against_jd
+from app.utils import score_resume_against_jd, store_score_in_dynamodb, get_score_history
 
 router  = APIRouter()
 
@@ -39,11 +39,15 @@ async def score_resume(user_id: str = Form(...), resume_text: str = Form(...)):
     
     score_result = score_resume_against_jd(resume_text, jd_text)
     print("DEBUG score_result:", score_result)
-
+    store_score_in_dynamodb(user_id, resume_text, jd_text, score_result)
     return {
         "message": "ATS score has been calculated ✅",
         "score": score_result["score_percent"],
         "matched_keywords": score_result["matched_keywords"],
         "missing_keywords": score_result["missing_keywords"]
     }
+
+@router.get("/score-history/{user_id}")
+def score_history(user_id: str):
+    return get_score_history(user_id)
 

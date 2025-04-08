@@ -1,14 +1,20 @@
 import re
+import boto3
+from datetime import datetime, timezone
+import uuid
 import json
 from pathlib import Path
 from collections import Counter
+from decimal import Decimal
+from boto3.dynamodb.conditions import Key
+
 SKILL_FILE = Path(__file__).parent / "skills.json"
 
 with open(SKILL_FILE, "r") as f:
     SKILL_MAP = json.load(f)
 
-print(f"🔍 Skill map contains {len(SKILL_MAP)} skills")
-print(f"🔍 Sample keys: {list(SKILL_MAP.keys())[:5]}")
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("resume-optimizer-data")
 
 SKILL_KEYWORDS = [
     "python", "java", "aws", "docker", "kubernetes", "git", "linux",
@@ -63,3 +69,33 @@ def extract_relevant_skills_from_jd(jd_text: str) -> set:
             relevant_skills.add(skill)
 
     return relevant_skills
+
+def store_score_in_dynamodb(user_id: str, resume_text: str, jd_text: str, score_result: dict):
+    resume_id = str(uuid.uuid4())
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    item = {
+        "user_id": user_id,
+        "resume_id": resume_id,
+        "timestamp": timestamp,
+        "score_precent": Decimal(str(score_result["score_percent"])),
+        "matched_keywords": score_result["matched_keywords"],
+        "missing_keywords": score_result["missing_keywords"],
+        "source": "manual"
+    }
+
+    table.put_item(Item=item)
+
+def get_score_history(user_id: str):
+    response = table.query(
+        KeyConditionExpression=Key("user_id").eq(user_id)   
+    )
+
+    items = response.get("Items", [])
+
+    sorted_items = sorted(items, key=lambda x: x.get("timestamp", ""), reverse=True)
+
+    return {
+        "user_id": user_id,
+        "history": sorted_items
+    }

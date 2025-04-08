@@ -62,6 +62,18 @@ function JDInput({ resumeText }) {
     <p className="text-red-600 mt-1">
       ❌ Missing: {scoreResult.missing_keywords.join(", ")}
     </p>
+    {scoreResult.suggestions && (
+  <div className="mt-4">
+    <h3 className="font-bold text-gray-800 mb-2">💡 Suggestions:</h3>
+    <ul className="list-disc list-inside space-y-1 text-gray-700">
+      {Object.entries(scoreResult.suggestions).map(([keyword, tip]) => (
+        <li key={keyword}>
+          <span className="font-semibold">{keyword}:</span> {tip}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
   </div>
 )}
 

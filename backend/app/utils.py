@@ -16,12 +16,6 @@ with open(SKILL_FILE, "r") as f:
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("resume-optimizer-data")
 
-SKILL_KEYWORDS = [
-    "python", "java", "aws", "docker", "kubernetes", "git", "linux",
-    "react", "node.js", "sql", "mongodb", "lambda", "dynamodb",
-    "api", "cloud", "agile", "s3", "ci/cd", "rest", "html", "css"
-]
-
 def clean_text(text: str) -> str:
     text = text.replace("\n", " ")     
     text = text.replace("\t", " ")
@@ -52,12 +46,24 @@ def score_resume_against_jd(resume_text: str, jd_text: str) -> dict:
 
     print(f"🧠 Relevant skills from JD: {relevant_skills}")
 
+        # Load suggestions JSON
+    suggestion_path = Path(__file__).parent / "keyword_suggestions.json"
+    with open(suggestion_path, "r") as f:
+        suggestion_data = json.load(f)
+
+    # Build suggestions for missing keywords
+    suggestions = {}
+    for keyword in missing:
+        if keyword in suggestion_data:
+            suggestions[keyword] = suggestion_data[keyword]
+
 
     score = len(matched) / (len(matched) + len(missing) + 1e-6)
     return {
         "score_percent": round(score * 100, 2),
         "matched_keywords": matched,
-        "missing_keywords": missing
+        "missing_keywords": missing,
+        "suggestions": suggestions
     }
 
 def extract_relevant_skills_from_jd(jd_text: str) -> set:

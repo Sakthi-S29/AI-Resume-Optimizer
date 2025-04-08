@@ -45,7 +45,8 @@ async def score_resume(user_id: str = Form(...), resume_text: str = Form(...)):
         "message": "ATS score has been calculated ✅",
         "score": score_result["score_percent"],
         "matched_keywords": score_result["matched_keywords"],
-        "missing_keywords": score_result["missing_keywords"]
+        "missing_keywords": score_result["missing_keywords"],
+        "suggestions": score_result.get("suggestions", {})
     }
 
 @router.get("/score-history/{user_id}")

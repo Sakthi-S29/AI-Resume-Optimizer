@@ -32,7 +32,7 @@ async def upload_job_description(user_id: str = Form(...), jd_text: str = Form(.
     }
 
 
-@router.post("/resume-score")
+@router.post("/score-resume")
 async def score_resume(user_id: str = Form(...), resume_text: str = Form(...)):
     jd_text = job_descriptions.get(user_id)
     if not jd_text:

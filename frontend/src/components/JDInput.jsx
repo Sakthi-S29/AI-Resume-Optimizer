@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import ScoreVisualizer from "./ScoreVisualizer";
 
 function JDInput({ resumeText }) {
   const [jobDescription, setJobDescription] = useState("");
@@ -52,18 +53,18 @@ function JDInput({ resumeText }) {
       </button>
 
       {scoreResult && (
-        <div className="mt-6 bg-gray-50 p-4 rounded">
-          <p className="font-semibold text-lg text-gray-700">
-            🧠 Score: {scoreResult.score} / 100
-          </p>
-          <p className="text-green-700 mt-2">
-            ✅ Matched: {scoreResult.matched_keywords.join(", ")}
-          </p>
-          <p className="text-red-600 mt-1">
-            ❌ Missing: {scoreResult.missing_keywords.join(", ")}
-          </p>
-        </div>
-      )}
+  <div className="mt-6 bg-gray-50 p-4 rounded">
+    <ScoreVisualizer score={scoreResult.score} />
+
+    <p className="text-green-700 mt-2">
+      ✅ Matched: {scoreResult.matched_keywords.join(", ")}
+    </p>
+    <p className="text-red-600 mt-1">
+      ❌ Missing: {scoreResult.missing_keywords.join(", ")}
+    </p>
+  </div>
+)}
+
     </div>
   );
 }

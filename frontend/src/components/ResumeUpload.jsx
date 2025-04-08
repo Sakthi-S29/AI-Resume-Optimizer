@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function ResumeUpload() {
+function ResumeUpload({ setResumeText }) {
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
 
@@ -22,6 +22,7 @@ function ResumeUpload() {
     try {
       const response = await axios.post("http://localhost:8000/upload-resume", formData);
       setUploadStatus("✅ Resume uploaded successfully");
+      setResumeText(response.data.extracted_text);
       console.log(response.data);
     } catch (error) {
       console.error("Upload failed:", error);

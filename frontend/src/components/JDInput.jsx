@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function JDInput() {
+function JDInput({ resumeText }) {
   const [jobDescription, setJobDescription] = useState("");
-  const [resumeText, setResumeText] = useState(""); // TEMP: manually paste
   const [scoreResult, setScoreResult] = useState(null);
 
   const handleScore = async () => {
-    if (!resumeText || !jobDescription) {
-      alert("Please paste both resume and JD.");
+    if (!jobDescription) {
+      alert("Please paste JD.");
       return;
     }
   
@@ -43,14 +42,6 @@ function JDInput() {
         placeholder="Paste job description here..."
         value={jobDescription}
         onChange={(e) => setJobDescription(e.target.value)}
-      />
-
-      <textarea
-        rows={4}
-        className="w-full border rounded p-2 mb-4"
-        placeholder="Paste resume text here (for now)"
-        value={resumeText}
-        onChange={(e) => setResumeText(e.target.value)}
       />
 
       <button
